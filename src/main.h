@@ -10,4 +10,6 @@
 
 #include "struct.h"
 
+int main(const int argc, char *argv[]);
+
 #endif
