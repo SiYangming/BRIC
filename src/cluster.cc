@@ -73,6 +73,7 @@ static int seed_current_modify(const DiscreteArray& s, std::list<std::size_t>& c
                                std::vector<std::vector<bits16>>& profile, double TOLERANCE) {
   std::size_t n;
   int threshold = static_cast<int>(std::ceil(components * TOLERANCE));
+  if (components<10) threshold = ceil(components*0.95);
   int cnt = 0;
   for (std::size_t i = 0; i < profile.size(); i++) {
     std::size_t flag = 0;
