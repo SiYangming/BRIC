@@ -13,5 +13,11 @@ qubic <- function(i, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90
   vec <- c(vec, "-c", as.character(c))
   vec <- c(vec, "-o", as.character(o))
   
-  return(.main(vec))
+  unloadNamespace("BRIC")
+  ret <- .main(vec)
+  return (ret)
+}
+
+.onUnload <- function (libpath) {
+  library.dynam.unload("BRIC", libpath)
 }
