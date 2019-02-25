@@ -9,7 +9,7 @@
 
 // [[Rcpp::plugins(openmp)]]
 
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
 
 using namespace Rcpp;
 
@@ -22,13 +22,12 @@ extern "C" void my_function_to_handle_aborts(int signal_number) {
   stop("abort()");
 }
 
-//' @backref src/rcpp_qubic.cpp
+//' @backref src/rcpp_bric.cpp
 // [[Rcpp::export(.main)]]
 int qubic(const CharacterVector& str) {
   // may treat abort() more friendly, see http://stackoverflow.com/a/3911102
   signal(SIGABRT, &my_function_to_handle_aborts);
   try {
-    printf(arma::arma_version::as_string().c_str());
     int argc = str.size();
     char **argv = new char*[str.size()];
     

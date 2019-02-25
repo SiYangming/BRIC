@@ -8,4 +8,4 @@ Maintainer: Yu Zhang <zy26@jlu.edu.cn>
 Description: One paragraph description of what the package does as one or more full sentences.
 License: CC BY-NC-ND 4.0 + file LICENSE
 Imports: Rcpp (>= 1.0.0)
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp

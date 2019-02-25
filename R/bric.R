@@ -1,6 +1,8 @@
 #' @describeIn QUBIC Performs a QUalitative BIClustering.
 #'
 #' @usage qubic(i, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000)
+#' 
+#' @export
 qubic <- function(i, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000) {
   vec <- c("./qubic", "-i", i)
   if(R) vec <- c(vec, "-R")

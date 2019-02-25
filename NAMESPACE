@@ -1,0 +1,3 @@
+useDynLib(BRIC)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
