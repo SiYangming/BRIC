@@ -77,7 +77,7 @@ int main(const int argc, char *argv[]) {
     write_imported(stream_nm);
     /* exit the program without biclustering analysis*/
     if (po->IS_Fast)
-      exit(1);
+      abort();
     /* the file that stores all blocks */
     char dest[LABEL_LEN + 20];
     strcpy(dest, po->FN);

@@ -184,7 +184,7 @@ void get_options(int argc, char *argv[]) {
       break;
     case 'h':
       puts(USAGE);
-      exit(0);
+      abort();
     /*if expression does not match any constant-expression, control is
      * transferred to the statement(s) that follow the optional default label*/
     default:
@@ -194,7 +194,7 @@ void get_options(int argc, char *argv[]) {
   /* basic sanity check */
   if (is_valid && po->FN[0] == ' ') {
     puts(USAGE);
-    exit(0);
+    abort();
   }
   if (is_valid) {
     po->FP = mustOpen(po->FN, "r");
