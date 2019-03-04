@@ -19,7 +19,7 @@ extern "C" void my_function_to_handle_aborts(int signal_number) {
    because abort() was called, your program will exit or crash anyway
    (with a dialog box on Windows).
    */
-  stop("abort()");
+  // stop("abort()");
 }
 
 //' @backref src/rcpp_bric.cpp
