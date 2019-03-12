@@ -3,8 +3,9 @@
 #' @usage qubic(i, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000)
 #' 
 #' @export
-qubic <- function(i, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000) {
+qubic <- function(i, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000) {
   vec <- c("./qubic", "-i", i)
+  if(N) vec <- c(vec, "-N")
   if(R) vec <- c(vec, "-R")
   if(F) vec <- c(vec, "-F") 
   if(d) vec <- c(vec, "-d") 

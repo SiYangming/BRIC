@@ -159,8 +159,8 @@ CLUSTERING <- function(Raw,graph,method='MCL',K=null,ref='Yan_cell_label.csv'){
 #' @export
 ## final function
 ## i is the input, K is an optional parameter, used only when method=='SC'
-final <- function(i, method = 'MCL', K, ref, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
-  qubic(i, R = R, F = F, d = d, f = f, k = k, c = c, o = o)
+final <- function(i, method = 'MCL', K, ref, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
+  qubic(i, N = N, R = R, F = F, d = d, f = f, k = k, c = c, o = o)
   if (R) {
     GRAPH(paste0(i,'.chars.blocks'))
     CLUSTERING(i, paste0(i,'.chars.blocks_graph.csv'), method, K = K, ref)    # not sure how to deal with that K 
