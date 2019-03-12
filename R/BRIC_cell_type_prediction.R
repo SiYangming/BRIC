@@ -52,7 +52,7 @@ MCL <-function(Raw,graph){   # Raw is the original expression matrix
   CellNum <-dim(RAW)[2]-1  # the number of cells
   Graph <-read.csv(graph,header=T,sep=",") 
   G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
-  A <- as_adjacency_matrix(G,type="both",attr="weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
+  A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
   Covered <-length(V_name)  # the #of covered cells
   
@@ -102,7 +102,7 @@ SC <-function(Raw,graph,K){
   CellNum <-dim(RAW)[2]-1  # the number of cells 
   Graph <-read.csv(graph,header=T,sep=",") 
   G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
-  A <- as_adjacency_matrix(G,type="both",attr="weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
+  A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
   Covered <-length(V_name)  # the #of covered cells
   
