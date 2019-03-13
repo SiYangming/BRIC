@@ -127,9 +127,9 @@ SC <-function(Raw,blocks,K){
 CLUSTERING <- function(Raw,blocks,method='MCL',K=null,ref=NULL){
   RST <-list()
   if (method=='MCL'){
-    RST[['Label']] <-MCL(Raw,block)
+    RST[['Label']] <-MCL(Raw,blocks)
   }else if (method =='SC'){
-    RST[['Label']] <-SC(Raw,block,k)
+    RST[['Label']] <-SC(Raw,blocks,K)
   }
   
   ### I want to add a judgment here, if user provide reference label, proceed to calculate ARI, FM and JI
