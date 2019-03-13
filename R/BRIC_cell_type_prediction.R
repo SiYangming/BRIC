@@ -31,9 +31,9 @@ GRAPH <-function(blocks){
     Wt[k] <-length(intersect(member1[,2],member2[,2])) # the weight between two node
   }
   GRAPH <-data.frame(Node[,1],Node[,2],Wt)
-  names(GRAPH) <-c('Node1','Node2','Weigth')
+  names(GRAPH) <-c('Node1','Node2','Weight')
   if (dim(GRAPH)[1]!=0)	{
-    write.csv(subset(GRAPH,Wt!=0),paste(basename(blocks),'_graph.csv',sep=''),row.names=FALSE)
+    return(Graph)
   }
 }
 
@@ -47,10 +47,10 @@ library(clues)
 library(anocva)
 
 ## clustering function 
-MCL <-function(Raw,graph){   # Raw is the original expression matrix
+MCL <-function(Raw,block){   # Raw is the original expression matrix
   RAW <-read.table(Raw,header=T,sep='\t')
   CellNum <-dim(RAW)[2]-1  # the number of cells
-  Graph <-read.csv(graph,header=T,sep=",") 
+  Graph <-GRAPH(block) 
   G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
   A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
@@ -97,10 +97,10 @@ MCL <-function(Raw,graph){   # Raw is the original expression matrix
 }
 
 
-SC <-function(Raw,graph,K){
+SC <-function(Raw,block,K){
   RAW <-read.table(Raw,header=T,sep='\t')  # expression data
   CellNum <-dim(RAW)[2]-1  # the number of cells 
-  Graph <-read.csv(graph,header=T,sep=",") 
+  Graph <-GRAPH(block) 
   G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
   A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
@@ -124,12 +124,12 @@ SC <-function(Raw,graph,K){
 ## graph is the weighted graph from GRAPH function
 ## method should be either 'MCL' or 'SC', and if 'SC', user also need to specify k
 ## ref is optional input, which is reference label. Must have two columns, one is 'Cell_type', denoting the name of cells, the other is 'Cluster', denoting the membership of each cell
-CLUSTERING <- function(Raw,graph,method='MCL',K=null,ref='Yan_cell_label.csv'){
+CLUSTERING <- function(Raw,block,method='MCL',K=null,ref='Yan_cell_label.csv'){
   RST <-list()
   if (method=='MCL'){
-    RST[['Label']] <-MCL(Raw,graph)
+    RST[['Label']] <-MCL(Raw,block)
   }else if (method =='SC'){
-    RST[['Label']] <-SC(Raw,graph,k)
+    RST[['Label']] <-SC(Raw,block,k)
   }
   
   ### I want to add a judgment here, if user provide reference label, proceed to calculate ARI, FM and JI
@@ -162,10 +162,9 @@ CLUSTERING <- function(Raw,graph,method='MCL',K=null,ref='Yan_cell_label.csv'){
 final <- function(i, method = 'MCL', K, ref, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
   qubic(i, N = N, R = R, F = F, d = d, f = f, k = k, c = c, o = o)
   if (R) {
-    GRAPH(paste0(i,'.chars.blocks'))
-    CLUSTERING(i, paste0(i,'.chars.blocks_graph.csv'), method, K = K, ref)    # not sure how to deal with that K 
+    CLUSTERING(i, paste0(i,'.chars.blocks'), method, K = K, ref)    # not sure how to deal with that K 
   } else {
     GRAPH(paste0(i,'.blocks'))
-    CLUSTERING(i, paste0(i,'.blocks_graph.csv'), method, K = K, ref)    # not sure how to deal with that K 
+    CLUSTERING(i, paste0(i,'.blocks'), method, K = K, ref)    # not sure how to deal with that K 
   }
 }
