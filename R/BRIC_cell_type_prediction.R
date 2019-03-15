@@ -119,11 +119,9 @@ SC <-function(Raw,blocks,K){
   return(label)
 }
 
-## this should be the function user really use, output cell label (always) and ARI score (only when reference label is provided)
 ## Raw is the path to the original expression matrix
-## graph is the weighted graph from GRAPH function
-## method should be either 'MCL' or 'SC', and if 'SC', user also need to specify k
-## ref is optional input, which is reference label. Must have two columns, one is 'Cell_type', denoting the name of cells, the other is 'Cluster', denoting the membership of each cell
+## method should be either 'MCL' or 'SC', and if 'SC', user also need to specify K, the number of clusters 
+
 CLUSTERING <- function(Raw,blocks,method='MCL',K=NULL){
   RST <-as.numeric()
   if (method=='MCL'){
