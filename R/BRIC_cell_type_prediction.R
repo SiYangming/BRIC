@@ -124,34 +124,12 @@ SC <-function(Raw,blocks,K){
 ## graph is the weighted graph from GRAPH function
 ## method should be either 'MCL' or 'SC', and if 'SC', user also need to specify k
 ## ref is optional input, which is reference label. Must have two columns, one is 'Cell_type', denoting the name of cells, the other is 'Cluster', denoting the membership of each cell
-CLUSTERING <- function(Raw,blocks,method='MCL',K=null,ref=NULL){
-  RST <-list()
+CLUSTERING <- function(Raw,blocks,method='MCL',K=NULL){
+  RST <-as.numeric()
   if (method=='MCL'){
-    RST[['Label']] <-MCL(Raw,blocks)
+    RST <-MCL(Raw,blocks)
   }else if (method =='SC'){
-    RST[['Label']] <-SC(Raw,blocks,K)
-  }
-  
-  ### I want to add a judgment here, if user provide reference label, proceed to calculate ARI, FM and JI
-  ### if not, just return Label	
-  if (!missing(ref)){
-    target <-read.table(ref,header=T,sep=',')
-    aa <-names(RST[['Label']])
-    bb <-target$Cell_type
-    # judge if the cell names are consistent
-    # if consistent, continue to calculate ARI ect
-    if (identical(sort(aa),sort(as.character(bb)))=='TRUE'){
-      sorted <-RST[['Label']][match(target$Cell_type,names(RST[['Label']]))] # sort the predicted label
-      ARI <-adjustedRandIndex(sorted,target$Cluster)  
-      RI <-adjustedRand(sorted,target$Cluster,randMethod='Rand')
-      FM <-adjustedRand(sorted,target$Cluster,randMethod='FM')
-      JI <-adjustedRand(sorted,target$Cluster,randMethod='Jaccard')
-      df <-data.frame(ARI=ARI, RandIndex=RI,FolkesMallow=FM, Jaccard=JI)
-      
-      RST[['df']] <-df
-    }else{
-      warning(paste0('Cell names in the reference label and predicted label are inconsistent, please double check !'))
-    }
+    RST <-SC(Raw,blocks,K)
   }
   RST
 }
@@ -159,12 +137,11 @@ CLUSTERING <- function(Raw,blocks,method='MCL',K=null,ref=NULL){
 #' @export
 ## final function
 ## i is the input, K is an optional parameter, used only when method=='SC'
-final <- function(i, method = 'MCL', K, ref, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
+final <- function(i, method = 'MCL', K, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
   qubic(i, N = N, R = R, F = F, d = d, f = f, k = k, c = c, o = o)
   if (R) {
-    CLUSTERING(i, paste0(i,'.chars.blocks'), method, K = K, ref)    # not sure how to deal with that K 
+    CLUSTERING(i, paste0(i,'.chars.blocks'), method, K = K)    # not sure how to deal with that K 
   } else {
-    GRAPH(paste0(i,'.blocks'))
-    CLUSTERING(i, paste0(i,'.blocks'), method, K = K, ref)    # not sure how to deal with that K 
+    CLUSTERING(i, paste0(i,'.blocks'), method, K = K)    # not sure how to deal with that K 
   }
 }
