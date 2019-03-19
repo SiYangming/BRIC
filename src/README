@@ -9,11 +9,12 @@ Certain parts of the code uses open-source data structure library codes, includi
 ==================
 Installation
 ==================
-Simply put "qubicx.x.tar.gz" in any directory, 
+Download the source code from https://github.com/maqin2001/qubic2, which will be a zip file named qubic2-master.zip
+Simply put the zip file in any directory, 
 
-    $ tar zxvf qubicx.x.tar.gz
+    $ unzip qubic2-master.zip
 
-enter the folder "qubicx.x" and type 
+enter the folder "qubic2-master" and type 
 
     $ make 
 
@@ -31,13 +32,13 @@ are provided. See help and look at all available options.
 
 Take a look at `toy_example` (discrete data) first. And try to run clustering
 
-    $ ./qubic -i data/toy_example -d
+    $ ./qubic -i ./data/toy_example -d
 
 -d is important here since it tells the program that this is discrete data.
 
 Then look at a larger file `Ecoli` (continuous data). Try to run
 
-    $ ./qubic -i data/example -f .25
+    $ ./qubic -i ./data/example -f .25
 
 This restricts no two blocks overlap more than 0.25 of the size of each one. And the other parameters are default value.
 
@@ -52,7 +53,6 @@ discrete the data in '.rules' file. The 'em.chars' file contains the representin
 ======================
 Parameters of QUBIC 
 ======================
-
 QUBIC has a number of parameters for discretization and biclustering, respectivley. 
 
 **************
@@ -60,7 +60,7 @@ Discretization
 **************
 -F the flap to do discretization without biclustering
 
--r the range of possible ranks
+-r if use quantile based discretization, r is the range of possible ranks
 
 -q if use quantile discretization for continuous data, q is the percentage of the regulating conditions for each gene
 
@@ -98,10 +98,10 @@ actual gene expression values to go directly to the biclustering step on the pro
 ==================
 Basic usages
 ==================
- 
- $ ./qubic -i filename [argument list]
 
-The default bilcustering method in QUBIC2 uses KL score as a way to control bicluster expansion.
+$ ./qubic -i  filename [argument list]
+
+The defualt biclustering method in QUBIC2 uses KL score to control bicluster expansion.
 
 ==================
 Advanced usages
@@ -122,103 +122,34 @@ and the program will generate a 'B.blocks.expansion' file, containing the enlarg
 see details in read_array.c. now the results have each own advantages on GO, KEGG and REGULON.-07.20.2009
 
 	==========
-- We can just consider the seeds containing to-be-searched gene name, e.g. B1234
 
-    $ ./qubic -i data/example -g b3634
-
-- We can just consider the seeds containing a list of genes, e.g. candidate_list
-
-    $ ./qubic -i example -l candidate_list
-	==========
-
-- S: the flag using area as the value of bicluster to determine when stop
-
-    $ ./qubic -i example -S
-
-- N: the flag using QUBIC's objective function (i.e., min(|I|,|J|))  to determine when to stop
+- N: the flag using QUBIC's objective function(i.e., min(|I|,|J|)) to determine when to stop
     
-    $ ./qubic -i example -N
+    $ ./qubic -i ./data/example -N
 	==========
 
 - C: the flag using Dual strategy to expand core bicluster 
 
-    $ ./qubic -i example -C
-    
-Note that when use -C and -N simutaneous, users are using  QUBIC's objective function and Dual strategy.
+    $ ./qubic -i ./data/example -C
 
-- To enlarge current biclsuter by the pvalue constrain 
+(Note1: when use -C and -N simutaneously, users are using QUBIC's objective function and Dual strategy;
+Note2: when use -C, users should no longer use -c )
 
-    $ ./qubic -i Ecoli -P
 	=========
 
 - To descretize data by the mixture of normal distribution model
 
-    $ ./qubic -i example -n
+    $ ./qubic -i ./data/example -n
 
 - To descretize RPKM data by the mixture of normal distribution model
 
-    $ ./qubic -i example -R
+    $ ./qubic -i ./data/example -R
 
 - F: the flag of only doing discretization
 
-    $ ./qubic -i example -F
+    $ ./qubic -i ./data/example -F -R
 
-	=========
 
-- Calculate the similarity between two genes consider spearman correlation and KL-information
-
-    $ ./qubic -i example -p
-
-==================
-Changelog
-==================
-Initial import of Version 2.0
-New features compared to 1.0:
-
-- a new objective function when clustering based on KL function
-
-- pvalue calculation using gsl library to the makefile (hypergeometric distribution)
-
-- a new discretization method based on mixture normal distribution (controled by -n)
-	- a well-done version of 3-classification 
- 
-
-Initial import of Version 2.1
-New features compared to 2.0:
-Yu Shang <yushang@uga.edu>
-1. Using 1 to 9 different gauss distribution to discreting data (controled by -n or -R)
-2. Calculating bic of the different gauss distribution
-
-Initial import of Version 2.1.1
-New features compared to 2.1:
-Yu Shang <yushang@uga.edu>
-1. Remove the diagnose program for NA and Inf.
-2. Minimum initialization mean is less than the minimum data
-3. Maximum initialization mean is grater than the maximum data
-
-Initial import of Version 2.1.2
-New features compared to 2.1.1:
-Yu Shang <yushang@uga.edu>
-1. Output all the parameters of 1 to 9 different gauss distribution
-
-Version 2.1.6
-1. add the new output file "RPKM_testing_1.RNA-seq_9results.txt" for discretization (-R or -n), containing all the internal results for the (up-to-9) normal distributions decomposition
-2. add the new output file "RPKM_testing_1.RNA-seq_CHI_NEW.txt" for discretization (-R or -n), containing the optimized decomposition method using BIC
-3. add the new output file "RPKM_testing_1.MA_table_1_pos_neg.txt" for discretization (-R or -n), containing the qualitative matrix of lowly expressed, normally expressed and highly expressed patterns
-4. add the new output file "RPKM_testing_1.MA_table_2_indicator.txt" for discretization (-R or -n), containing the qualitative matrix of expressed and non-expressed patterns. if one gene have more than one patterns, we will split it into multiple putitative genes.
-5. add the new output file "RPKM_testing_1.RNA-seq_EMresults.txt" for discretization (-R or -n), containing the qualitative matrix of up-to-9 states
-6. add -N, -S whose details could be found in README file 
-
-Version 2.1.7
-1. fix the bug in clustering part.
-2. The clustering part for -R / -n is ignored in this version. The user should select the discretizated output and run "$ ./qubic -i file -d".
-
-Version 2.2.0
-1.  delete previous discretize_new_3() and discretize_rpkm_3() function in read_array.cpp.
-2. delete previous discretization output, add four new output files:
-"em.chars" consists of nonzero integers(1~9), each row is a qualitative representation for one gene. Integer denotes which component distribution the gene comes from under the current condition;
-"split.chars" is the qualitative matrix based on em.chars (see detail in the paper).;
-"chars" consists of -1,0 and 1, which denote lowly, normally and highly expressed genes, respectively.
 
 ==================
 Contact

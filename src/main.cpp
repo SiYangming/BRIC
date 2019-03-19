@@ -79,11 +79,18 @@ int main(const int argc, char *argv[]) {
     if (po->IS_Fast)
       abort();
     /* the file that stores all blocks */
+    if (po->IS_new_discrete || po->IS_rpkm)	{
+      strcpy(stream_nm, argv[0]);		
+      strcat(stream_nm, " -i ");
+      strcat(stream_nm, po->FN);
+      strcat(stream_nm, ".chars -d");
+      system(stream_nm); // This ugly call should be fixed.
+      abort();
+    }
     char dest[LABEL_LEN + 20];
     strcpy(dest, po->FN);
     strcat(dest, ".blocks");
     make_graph(dest);
-
   } /* end of main else */
   for (auto row = 0; row < rows; row++) {
     delete[] arr_c[row];
