@@ -77,7 +77,7 @@ int main(const int argc, char *argv[]) {
     write_imported(stream_nm);
     /* exit the program without biclustering analysis*/
     if (po->IS_Fast)
-      abort();
+      return 1;
     /* the file that stores all blocks */
     if (po->IS_new_discrete || po->IS_rpkm)	{
       strcpy(stream_nm, argv[0]);		
@@ -85,7 +85,7 @@ int main(const int argc, char *argv[]) {
       strcat(stream_nm, po->FN);
       strcat(stream_nm, ".chars -d");
       system(stream_nm); // This ugly call should be fixed.
-      abort();
+      return 1;
     }
     char dest[LABEL_LEN + 20];
     strcpy(dest, po->FN);
