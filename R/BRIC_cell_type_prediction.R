@@ -6,8 +6,8 @@
 ## this is an intermediate function, the only purpose is prepare weighted graph for following clustering 
 
 GRAPH <-function(blocks){
-  F <-readLines(blocks)
-  TEMP <-grep('Conds',F,value=T) ## extract condition lines in each BC
+  A <- readLines(blocks)
+  TEMP <- grep('Conds', A, value = TRUE) ## extract condition lines in each BC
   BC <-sapply(strsplit(TEMP,':',2),'[',2) # only keep cell names
   
   CONDS <-as.character()   # store the conditions 
@@ -40,25 +40,22 @@ GRAPH <-function(blocks){
 ####### 2. cell type prediction  #######
 ## cell type prediction based on weighted graph
 
-library(igraph)
-library(mclust)
-library(MCL)
-library(clues)
-library(anocva)
-
+#' @importFrom igraph graph.data.frame
+#' @importFrom igraph as_adjacency_matrix
+#' @importFrom MCL mcl
 ## clustering function 
 MCL <-function(Raw,blocks){   # Raw is the original expression matrix
   RAW <-read.table(Raw,header=T,sep='\t')
   CellNum <-dim(RAW)[2]-1  # the number of cells
   Graph <-GRAPH(blocks) 
-  G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
-  A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
+  G <- igraph::graph.data.frame(Graph,directed = FALSE)  # convert file into graph
+  A <- igraph::as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
   Covered <-length(V_name)  # the #of covered cells
   
   CLUST <-list()
   for (i in 1:100){
-    CLUST[[i]] <-mcl(A,addLoops = FALSE,inflation =i,max.iter=200)
+    CLUST[[i]] <- MCL::mcl(A,addLoops = FALSE,inflation =i,max.iter=200)
   }
   KK <- as.data.frame(do.call(rbind,lapply(CLUST,'[[',1)))  # extract the number of clusters
   CAN_I <-c(which(as.numeric(as.character(KK$V1))>=2)) 	# results that has more than 5 clusters
@@ -96,17 +93,19 @@ MCL <-function(Raw,blocks){   # Raw is the original expression matrix
   return(label)
 }
 
-
+#' @importFrom igraph graph.data.frame 
+#' @importFrom igraph as_adjacency_matrix
+#' @importFrom anocva spectralClustering
 SC <-function(Raw,blocks,K){
   RAW <-read.table(Raw,header=T,sep='\t')  # expression data
   CellNum <-dim(RAW)[2]-1  # the number of cells 
   Graph <-GRAPH(blocks) 
-  G <-graph.data.frame(Graph,directed = FALSE)  # convert file into graph
-  A <- as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
+  G <- igraph::graph.data.frame(Graph,directed = FALSE)  # convert file into graph
+  A <- igraph::as_adjacency_matrix(G,type="both",attr="Weight",names=TRUE,sparse=FALSE)  # convert graph into adjacency matrix
   V_name <-rownames(A)   # the vertix
   Covered <-length(V_name)  # the #of covered cells
   
-  sc <-spectralClustering(A,k=K)
+  sc <- anocva::spectralClustering(A,k=K)
   names(sc) <-rownames(A)
   if (length(rownames(A)) ==CellNum){
     label <-sc
@@ -133,6 +132,7 @@ CLUSTERING <- function(Raw,blocks,method='MCL',K=NULL){
 }
 
 #' @export
+#' @useDynLib BRIC
 ## final function
 ## i is the input, K is an optional parameter, used only when method=='SC'
 final <- function(i, method = 'MCL', K, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){

@@ -7,5 +7,6 @@ Author: Yu Zhang
 Maintainer: Yu Zhang <zy26@jlu.edu.cn>
 Description: One paragraph description of what the package does as one or more full sentences.
 License: CC BY-NC-ND 4.0 + file LICENSE
-Imports: Rcpp (>= 1.0.0)
+Imports: Rcpp (>= 1.0.0), MCL, anocva, igraph
 LinkingTo: Rcpp
+RoxygenNote: 6.1.1
