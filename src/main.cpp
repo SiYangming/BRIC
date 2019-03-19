@@ -80,12 +80,7 @@ int main(const int argc, char *argv[]) {
       return 1;
     /* the file that stores all blocks */
     if (po->IS_new_discrete || po->IS_rpkm)	{
-      strcpy(stream_nm, argv[0]);		
-      strcat(stream_nm, " -i ");
-      strcat(stream_nm, po->FN);
-      strcat(stream_nm, ".chars -d");
-      system(stream_nm); // This ugly call should be fixed.
-      return 1;
+      return 42; // This magic number will triger another call to main.
     }
     char dest[LABEL_LEN + 20];
     strcpy(dest, po->FN);
