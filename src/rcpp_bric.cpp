@@ -35,7 +35,7 @@ int qubic(const CharacterVector& str) {
       argv[i] = strdup(as<std::string>(str[i]).c_str());
     }
     
-    int rtn = main(str.size(), argv);
+    int rtn = do_qubic(str.size(), argv);
     for (int i = 0; i < argc; ++i)
       free(argv[i]);
     delete[] argv;

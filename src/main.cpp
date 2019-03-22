@@ -12,8 +12,11 @@
 #include "read_array.h"
 
 /***********************************************************************/
-
 int main(const int argc, char *argv[]) {
+  do_qubic(argc, argv);
+}
+
+int do_qubic(const int argc, char *argv[]) {
   /* Start the timer */
   uglyTime(NULL);
   printf("\nQUBIC %.1f: greedy biclustering (compiled " __DATE__ " " __TIME__

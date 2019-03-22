@@ -10,6 +10,6 @@
 
 #include "struct.h"
 
-int main(const int argc, char *argv[]);
+int do_qubic(const int argc, char *argv[]);
 
 #endif
