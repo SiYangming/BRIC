@@ -140,7 +140,7 @@ void err(const char *format, ...)
 
 void errAbort(const char *format, ...)
     /* Print error message to stderr and exit */
-    __attribute__((noreturn, format(printf, 1, 2)));
+    __attribute__((format(printf, 1, 2)));
 
 void uglyTime(const char *label, ...);
 /* Print label and how long it's been since last call.  Call with

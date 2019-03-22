@@ -106,7 +106,7 @@ static void init_options() {
  * array of pointers to the strings which are those arguments-its type is array
  * of pointer to char
  */
-void get_options(int argc, char *argv[]) {
+bool get_options(int argc, char *argv[]) {
   int op;
   bool is_valid = TRUE;
 
@@ -184,7 +184,7 @@ void get_options(int argc, char *argv[]) {
       break;
     case 'h':
       puts(USAGE);
-      abort();
+      return false;
     /*if expression does not match any constant-expression, control is
      * transferred to the statement(s) that follow the optional default label*/
     default:
@@ -194,7 +194,7 @@ void get_options(int argc, char *argv[]) {
   /* basic sanity check */
   if (is_valid && po->FN[0] == ' ') {
     puts(USAGE);
-    abort();
+    return false;
   }
   if (is_valid) {
     po->FP = mustOpen(po->FN, "r");
@@ -225,7 +225,10 @@ void get_options(int argc, char *argv[]) {
     err("-n number of blocks to report should be >0");
     is_valid = FALSE;
   }
-  if (!is_valid)
+  if (!is_valid) {
     errAbort("Type -h to view possible options");
+    return FALSE;
+  }
+  return TRUE;
 }
 /***************************************************************************/

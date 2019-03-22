@@ -6,6 +6,6 @@
 #include <getopt.h>
 
 /* prototypes */
-void get_options(int argc, char *argv[]);
+bool get_options(int argc, char *argv[]);
 
 #endif

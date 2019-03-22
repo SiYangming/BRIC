@@ -25,7 +25,8 @@ int do_qubic(const int argc, char *argv[]) {
   rows = cols = 0;
 
   /* get the program options defined in get_options.c */
-  get_options(argc, argv);
+  if(!get_options(argc, argv))
+    return 1;
 
   /*get the size of input expression matrix*/
   get_matrix_size(po->FP);

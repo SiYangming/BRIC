@@ -71,7 +71,7 @@ void read_and_solve_blocks(FILE *fb, const char *fn) {
     while (strncmp(line, "BC", 2) != 0) {
       if (getline(&line, &n, fb) == -1) {
         uglyTime("expanded biclusters are written to %s", fn);
-        abort();
+        // abort();
       }
     }
     components = 0;
