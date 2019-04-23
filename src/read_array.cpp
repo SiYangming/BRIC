@@ -424,6 +424,10 @@ FILE *open(const char *src) {
   return fopen(filename, "w");
 }
 
+void discretize_dummy(const char *stream_nm) {
+  init_dis();
+}
+
 void discretize_new(const char *stream_nm) {
   FILE *F1 = open(".em.chars");    /*qualitative rows, integers denote the most
                                       likely distribution*/

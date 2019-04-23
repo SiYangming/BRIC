@@ -135,8 +135,8 @@ CLUSTERING <- function(Raw,blocks,method='MCL',K=NULL){
 #' @useDynLib BRIC
 ## final function
 ## i is the input, K is an optional parameter, used only when method=='SC'
-final <- function(i, method = 'MCL', K, N = FALSE, R = FALSE, F = FALSE, d = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
-  qubic(i, N = N, R = R, F = F, d = d, f = f, k = k, c = c, o = o)
+final <- function(i, method = 'MCL', K, N = FALSE, R = FALSE, F = FALSE, d = FALSE, D = FALSE, f = 0.85, k = 13, c = 0.90, o = 5000){
+  qubic(i, N = N, R = R, F = F, d = d, D = D, f = f, k = k, c = c, o = o)
   if (R) {
     CLUSTERING(i, paste0(i,'.chars.blocks'), method, K = K)    # not sure how to deal with that K 
   } else {

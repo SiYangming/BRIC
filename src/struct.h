@@ -109,6 +109,7 @@ typedef struct Prog_options {
   bool IS_MaxMin;
   bool IS_rpkm;
   bool IS_Fast;
+  bool IS_dummy;
   int COL_WIDTH;
   int DIVIDED;
   std::size_t SCH_BLOCK;

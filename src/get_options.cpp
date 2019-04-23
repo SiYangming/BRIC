@@ -100,6 +100,7 @@ static void init_options() {
   po->IS_MaxMin = FALSE;
   po->IS_rpkm = FALSE;
   po->EM = 100;
+  po->IS_dummy = FALSE;
 }
 
 /*argc is a count of the arguments supplied to the program and argc[] is an
@@ -124,7 +125,7 @@ bool get_options(int argc, char *argv[]) {
    *followed by two colons (::), its argument is optional if an option character
    *is followed by no colons, it does not need argument
    */
-  while ((op = getopt(argc, argv, "i:b:q:r:dsf:k:o:c:Cm:e:pnRFNh")) > 0) {
+  while ((op = getopt(argc, argv, "i:b:q:r:dsf:k:o:c:Cm:e:pnRFNhD")) > 0) {
     switch (op) {
     /*optarg is set by getopt to point at the value of the option argument, for
      * those options that accept arguments*/
@@ -181,6 +182,9 @@ bool get_options(int argc, char *argv[]) {
       break;
     case 'N':
       po->IS_MaxMin = TRUE;
+      break;
+    case 'D':
+      po->IS_dummy = TRUE;
       break;
     case 'h':
       puts(USAGE);

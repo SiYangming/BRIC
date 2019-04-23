@@ -51,7 +51,9 @@ int do_qubic(const int argc, char *argv[]) {
     strcpy(stream_nm, po->FN);
     strcat(stream_nm, ".rules");
     /* formatting rules */
-    if (po->IS_new_discrete)
+    if (po->IS_dummy)
+      discretize_dummy(stream_nm);
+    else if (po->IS_new_discrete)
       discretize_new(stream_nm);
     else if (po->IS_rpkm)
       discretize_rpkm(stream_nm);

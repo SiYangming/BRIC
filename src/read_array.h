@@ -16,6 +16,7 @@ void read_labels(FILE *fp);
 void read_discrete(FILE *fp);
 void read_continuous(FILE *fp);
 void discretize(const char *stream_nm);
+void discretize_dummy(const char *stream_nm);
 void discretize_new(const char *stream_nm);
 void discretize_rpkm(const char *stream_nm);
 
