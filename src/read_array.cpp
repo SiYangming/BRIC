@@ -295,7 +295,9 @@ discrete dis_value(const float current, const int divided, float *small,
 void discretize(const char *stream_nm) {
   FILE *fw = mustOpen(stream_nm, "w");
   init_dis();
+  /*
 #pragma omp parallel for
+*/    /*comment out 0423*/
   for (int row = 0; row < rows; row++) {
     int col;
     continuous rowdata[cols];
@@ -463,7 +465,9 @@ void discretize_new(const char *stream_nm) {
   fputc('\n', F3);
 
   /*  distribution based discretization */
+  /*
 #pragma omp parallel for
+*/
   for (long long id = 0; id < rows;
        id++) { /*the outmost loop, loop through each gene*/
     double results[10][3][10], table_theta_t1[cols][9], temp, temp1, temp3,
@@ -990,8 +994,10 @@ void discretize_rpkm(const char *stream_nm) {
         arr_c_d[row][col] = symbols[arr_c[row][col]];
       }
     } 
-   
+ 
+  /*
 #pragma omp parallel for
+*/
   for (long long id = 0; id < rows; id++) {
     double results[10][3][10], table_theta_t1[cols][10],
         m = 0, d, temp, temp1, temp2, temp3, c[10][cols], cc[10], te[10],
