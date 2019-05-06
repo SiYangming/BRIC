@@ -295,9 +295,11 @@ discrete dis_value(const float current, const int divided, float *small,
 void discretize(const char *stream_nm) {
   FILE *fw = mustOpen(stream_nm, "w");
   init_dis();
-  /*
+  std::vector<float> lowers(rows);
+  std::vector<float> uppers(rows);
+  std::vector<int> cntls(rows);
+  std::vector<int> cntus(rows);
 #pragma omp parallel for
-*/    /*comment out 0423*/
   for (int row = 0; row < rows; row++) {
     int col;
     continuous rowdata[cols];
@@ -332,15 +334,21 @@ void discretize(const char *stream_nm) {
       arr_c[row][col] =
           charset_add(symbols, dis_value(arr[row][col], po->DIVIDED, small,
                                          cntl, big, cntu));
-    if (abs(cntl - cntu) <= 1)
+    lowers[row] = lower;
+    uppers[row] = upper;
+    cntls[row] = cntl;
+    cntus[row] = cntu;
+  }
+  for (int row = 0; row < rows; row++) {
+    if (abs(cntls[row] - cntus[row]) <= 1)
       fprintf(fw,
               "%s_unexpressed :low=%2.5f, up=%2.5f; %d down-regulated,%d "
               "up-regulated\n",
-              genes_n[row], lower, upper, cntl, cntu);
+              genes_n[row], lowers[row], uppers[row], cntls[row], cntus[row]);
     else
       fprintf(fw,
               "%s :low=%2.5f, up=%2.5f; %d down-regulated,%d up-regulated\n",
-              genes_n[row], lower, upper, cntl, cntu);
+              genes_n[row], lowers[row], uppers[row], cntls[row], cntus[row]);
   }
   progress("Discretization rules are written to %s", stream_nm);
   fclose(fw);
