@@ -439,38 +439,25 @@ void discretize_dummy(const char *stream_nm) {
 }
 
 void discretize_new(const char *stream_nm) {
-  FILE *F1 = open(".em.chars");    /*qualitative rows, integers denote the most
-                                      likely distribution*/
   FILE *F2 = open(".chars"); /*qualitative matrix MR*/
-  FILE *F3 = open(".original.chars"); /*qualitative rows consisting of -1,0,1, denoting
-                                lowly, normally and highly expressed */
   FILE *F4 = open(".rules"); /*store BIC,weight, mean and standard deviation*/
   init_dis();
 
   discrete **arr_c_d = alloc2c(rows, cols);
   discrete **arr_c_F2 = alloc2c(rows, cols);
-  discrete **arr_c_F3 = alloc2c(rows, cols);
   for (auto row = 0; row < rows; row++) {
     for (auto col = 0; col < cols; col++) {
       arr_c_d[row][col] = 0;
       arr_c_F2[row][col] = 0;
-      arr_c_F3[row][col] = 0;
     }
   }
 
   int col;
-  fprintf(F1, "o");
-  for (col = 0; col < cols; col++)
-    fprintf(F1, "\t%s", conds_n[col]);
-  fputc('\n', F1);
   fprintf(F2, "o");
   for (col = 0; col < cols; col++)
     fprintf(F2, "\t%s", conds_n[col]);
   fputc('\n', F2);
-  fprintf(F3, "o");
-  for (col = 0; col < cols; col++)
-    fprintf(F3, "\t%s", conds_n[col]);
-  fputc('\n', F3);
+
 
   /*  distribution based discretization */
   /*
@@ -810,12 +797,9 @@ void discretize_new(const char *stream_nm) {
                                                         with last peak*/
         arr_c[id][i] = charset_add(symbols, num_d);
     }
-    fprintf(F1, "%s", genes_n[id]);
     for (i = 0; i < cols; i++) {
       arr_c_F2[id][i] = arr_c[id][i]; /*arr_c_F2[][] store the output for F2*/
-      fprintf(F1, "\t%d", arr_c[id][i]); /*arr_c[][] store the output for F1*/
     }
-    fprintf(F1, "\n");
     /*############################################################################*/
     /* F2 split.chars */
     int arr_c_id[10]; /* store the unique nonzero intergers */
@@ -849,12 +833,10 @@ void discretize_new(const char *stream_nm) {
     }
 
     float zc_max = 0;
-    int zc_k_F3 = 0; /*zc_k_F3 is the most abundant nonzero integers */
     for (k = 0; k < 10;
          k++) { /* find the # of elements for the most abundant integer*/
       if (arr_c_count[k] > zc_max) {
         zc_max = arr_c_count[k];
-        zc_k_F3 = arr_c_id[k];
       }
     }
 
@@ -896,72 +878,38 @@ void discretize_new(const char *stream_nm) {
       }
     }
     printf("\n");
-    /*############################################################################*/
-    /*   .chars    */
-    if (num_d == 1) {
-      for (i = 0; i < cols; i++)
-        arr_c_F3[id][i] = arr_c_d[id][i]; /*arr_c_F3[][] store F3 output */
-    } else {
-      for (j = 0; j < cols; j++) {
-        if (arr_c[id][j] < zc_k_F3)
-          arr_c_F3[id][j] = -1;
-        if (arr_c[id][j] == zc_k_F3)
-          arr_c_F3[id][j] = 0;
-        if (arr_c[id][j] > zc_k_F3)
-          arr_c_F3[id][j] = 1;
-      }
-    }
-    fprintf(F3, "%s", genes_n[id]);
-    for (j = 0; j < cols; j++)
-      fprintf(F3, "\t%d", arr_c_F3[id][j]);
-    fprintf(F3, "\n");
   }
 
-  fclose(F1);
   fclose(F2);
-  fclose(F3);
   fclose(F4);
 
   for (auto row = 0; row < rows; row++) {
     delete[] arr_c_d[row];
     delete[] arr_c_F2[row];
-    delete[] arr_c_F3[row];
   }
   delete[] arr_c_d;
   delete[] arr_c_F2;
-  delete[] arr_c_F3;
 }
 
 void discretize_rpkm(const char *stream_nm) {
-  FILE *F1 = open(".em.chars");
   FILE *F2 = open(".chars");
-  FILE *F3 = open(".original.chars");
   FILE *F4 = open(".rules");
   init_dis();
 
   discrete **arr_c_d = alloc2c(rows, cols);
   discrete **arr_c_F2 = alloc2c(rows, cols);
-  discrete **arr_c_F3 = alloc2c(rows, cols);
   for (auto row = 0; row < rows; row++) {
     for (auto col = 0; col < cols; col++) {
       arr_c_d[row][col] = 0;
       arr_c_F2[row][col] = 0;
-      arr_c_F3[row][col] = 0;
     }
   }
   int col;
-  fprintf(F1, "o");
-  for (col = 0; col < cols; col++)
-    fprintf(F1, "\t%s", conds_n[col]);
-  fputc('\n', F1);
+
   fprintf(F2, "o");
   for (col = 0; col < cols; col++)
     fprintf(F2, "\t%s", conds_n[col]);
   fputc('\n', F2);
-  fprintf(F3, "o");
-  for (col = 0; col < cols; col++)
-    fprintf(F3, "\t%s", conds_n[col]);
-  fputc('\n', F3);
 
 /*  store qubic1.0 discretization output */
  continuous rowdata[cols];
@@ -1330,12 +1278,9 @@ void discretize_rpkm(const char *stream_nm) {
         arr_c[id][i] = charset_add(symbols, num_d);
       }
     }
-    fprintf(F1, "%s", genes_n[id]);
     for (i = 0; i < cols; i++) {
       arr_c_F2[id][i] = arr_c[id][i];
-      fprintf(F1, "\t%d", arr_c[id][i]);
     }
-    fprintf(F1, "\n");
     /*############################################################################*/
     /*store the qubic1.0 discretization output for further use*/
     
@@ -1372,12 +1317,10 @@ void discretize_rpkm(const char *stream_nm) {
     }
 
     float zc_max = 0;
-    int zc_k_F3 = 0; /*zc_k_F3 is the most abundant nonzero integers */
     for (k = 0; k < 10;
          k++) { /* find the # of elements for the most abundant integer*/
       if (arr_c_count[k] > zc_max) {
         zc_max = arr_c_count[k];
-        zc_k_F3 = arr_c_id[k];
       }
     }
     if (zc_max >= cols / 2) { /* if one peak is too abundant, use qubic1.0
@@ -1420,59 +1363,15 @@ void discretize_rpkm(const char *stream_nm) {
     printf("\n");
 
     /*############################################################################*/
-    /*   .chars    */
-    for (i = 0; i < cols; i++)
-      m += arr[id][i]; /* the sum of one row */
-    m /= cols;         /* the mean of one row */
-    temp2 = 0;
-    for (i = 0; i < cols; i++) {
-      /* the square of the difference between the sample and the expectation */
-      temp1 = arr[id][i];
-      temp1 -= m;
-      temp1 *= temp1;
-      temp2 += temp1;
-    }
-    temp2 /= (cols - 1); /* unbiased estimated variance */
-    d = sqrt(temp2);
-
-    temp = 0;
-    for (i = 0; i < cols; i++) {
-      temp1 = arr[id][i] - m;
-      temp1 /= d;
-      temp1 = temp1 * temp1 * temp1;
-      temp += temp1;
-    }
-
-    if (num_d == 1) {
-      for (i = 0; i < cols; i++)
-        arr_c_F3[id][i] = arr_c_d[id][i]; /*arr_c_F3[][] store F3 output */
-    } else {
-      for (j = 0; j < cols; j++) {
-        if (arr_c[id][j] < zc_k_F3)
-          arr_c_F3[id][j] = -1;
-        if (arr_c[id][j] == zc_k_F3)
-          arr_c_F3[id][j] = 0;
-        if (arr_c[id][j] > zc_k)
-          arr_c_F3[id][j] = 1;
-      }
-    }
-    fprintf(F3, "%s", genes_n[id]);
-    for (j = 0; j < cols; j++)
-      fprintf(F3, "\t%d", arr_c_F3[id][j]);
-    fprintf(F3, "\n");
   }
   progress("Discretization rules are written to %s", stream_nm);
-  fclose(F1);
   fclose(F2);
-  fclose(F3);
   fclose(F4);
 
   for (auto row = 0; row < rows; row++) {
     delete[] arr_c_d[row];
     delete[] arr_c_F2[row];
-    delete[] arr_c_F3[row];
   }
   delete[] arr_c_d;
   delete[] arr_c_F2;
-  delete[] arr_c_F3;
 }
