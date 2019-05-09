@@ -950,10 +950,9 @@ void discretize_rpkm(const char *stream_nm) {
         arr_c_d[row][col] = symbols[arr_c[row][col]];
       }
     } 
- 
-  /*
+  std::vector<std::vector<std::vector<bool>>> flags(rows, std::vector<std::vector<bool>>(cols, std::vector<bool>(10)));
+  std::vector<std::vector<std::size_t>> eflags(rows, std::vector<std::size_t>(10));
 #pragma omp parallel for
-*/
   for (long long id = 0; id < rows; id++) {
     double results[10][3][10], table_theta_t1[cols][10],
         m = 0, d, temp, temp1, temp2, temp3, c[10][cols], cc[10], te[10],
@@ -1349,10 +1348,23 @@ void discretize_rpkm(const char *stream_nm) {
     }
 
     for (i = 0; i < 10; i++) {
-      if (arr_c_id[i] != 0) {
-        fprintf(F2, "%s_%d", genes_n[id], arr_c_id[i]);
+      eflags[id][i] = arr_c_id[i];
+      if (eflags[id][i] != 0) {
         for (j = 0; j < cols; j++) {
-          if (arr_c_F2[id][j] == arr_c_id[i])
+          flags[id][j][i] = (arr_c_F2[id][j] == arr_c_id[i]);
+        }
+      }
+    }
+    printf("\n");
+
+    /*############################################################################*/
+  }
+  for (long long id = 0; id < rows; id++) {
+    for (std::size_t i = 0; i < 10; i++) {
+      if (eflags[id][i] != 0) {
+        fprintf(F2, "%s_%d", genes_n[id], eflags[id][i]);
+        for (std::size_t j = 0; j < cols; j++) {
+          if (flags[id][j][i])
             fprintf(F2, "\t1");
           else
             fprintf(F2, "\t0");
@@ -1360,10 +1372,8 @@ void discretize_rpkm(const char *stream_nm) {
         fprintf(F2, "\n");
       }
     }
-    printf("\n");
-
-    /*############################################################################*/
   }
+  
   progress("Discretization rules are written to %s", stream_nm);
   fclose(F2);
   fclose(F4);
