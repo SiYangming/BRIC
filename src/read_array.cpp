@@ -31,6 +31,7 @@
 
 #include "read_array.h"
 #include "getline.h"
+#include <sstream>
 
 /************************************************************************/
 /* Helper variables for tokenizer function */
@@ -460,9 +461,10 @@ void discretize_new(const char *stream_nm) {
 
 
   /*  distribution based discretization */
-  /*
+  std::vector<std::vector<std::vector<bool>>> flags(rows, std::vector<std::vector<bool>>(cols, std::vector<bool>(10)));
+  std::vector<std::vector<std::size_t>> eflags(rows, std::vector<std::size_t>(10));
+  std::vector<std::ostringstream> f4ss(rows);
 #pragma omp parallel for
-*/
   for (long long id = 0; id < rows;
        id++) { /*the outmost loop, loop through each gene*/
     double results[10][3][10], table_theta_t1[cols][9], temp, temp1, temp3,
@@ -688,37 +690,36 @@ void discretize_new(const char *stream_nm) {
     }
     /*##############################################################*/
     /*   .rules   */
-    fprintf(F4, "\n#%s\tK=%d\tIteration=%d_%d\tM\tBIC=%lf\n", genes_n[id],
-            num_d, EMBreak[num_d], EMReason[num_d], BIC2[num_d]);
+    f4ss[id] << "\n#" << genes_n[id] << "\tK = " << num_d << "\tIteration = " << EMBreak[num_d] << "_" << EMReason[num_d] << "\tM\tBIC = " << BIC2[num_d] << "\n";
     /*print the weight, mean and sd for each i, i =1,...9 */
     for (i = 1; i < 10; i++) {
-      fprintf(F4, "The number of Null dist : %d\t\n", i);
-      fprintf(F4, "A or proportion : \t");
+      f4ss[id] << "The number of Null dist: " << i << "\t\n";
+      f4ss[id] << "A or proportion: \t";
       for (j = 0; j < i; j++)
-        fprintf(F4, "%lf\t", results[i][0][j]);
-      fprintf(F4, "\nu or mean : \t");
+        f4ss[id] << results[i][0][j] << "\t";
+      f4ss[id] << "\nu or mean: \t";
       for (j = 0; j < i; j++)
-        fprintf(F4, "%lf\t", results[i][1][j]);
-      fprintf(F4, "\nsig or sigma : \t");
+        f4ss[id] << results[i][1][j] << "\t";
+      f4ss[id] << "\nsig or sigma: \t";
       for (j = 0; j < i; j++)
-        fprintf(F4, "%lf\t", results[i][2][j]);
-      fprintf(F4, "\n");
+        f4ss[id] << results[i][2][j] << "\t";
+      f4ss[id] << "\n";
     }
     /*print 9 BIC and the optimum one and corresponding A,u,sig*/
-    fprintf(F4, "\nBIC results : \t");
+    f4ss[id] << "\nBIC results : \t";
     for (i = 1; i < 10; i++)
-      fprintf(F4, "%lf\t", BIC2[i]);
-    fprintf(F4, "\nWhich BIC We Choose : \t%d\n", num_d);
-    fprintf(F4, "A or proportion : \t");
+      f4ss[id] << BIC2[i] << "\t";
+    f4ss[id] << "\nWhich BIC We Choose: \t" << num_d << "\n";
+    f4ss[id] << "A or proportion: \t";
     for (i = 0; i < num_d; i++)
-      fprintf(F4, "%lf\t", results[num_d][0][i]);
-    fprintf(F4, "\nu or mean : \t");
+      f4ss[id] << results[num_d][0][i] << "\t";
+    f4ss[id] << "\nu or mean: \t";
     for (i = 0; i < num_d; i++)
-      fprintf(F4, "%lf\t", results[num_d][1][i]);
-    fprintf(F4, "\nsig or sigma : \t");
+      f4ss[id] << results[num_d][1][i] << "\t";
+    f4ss[id] << "\nsig or sigma: \t";
     for (i = 0; i < num_d; i++)
-      fprintf(F4, "%lf\t", results[num_d][2][i]);
-    fprintf(F4, "\n");
+      f4ss[id] << results[num_d][2][i] << "\t";
+    f4ss[id] << "\n";
 
     printf("%d\t%d\n", num_d, cols);
 
@@ -864,12 +865,23 @@ void discretize_new(const char *stream_nm) {
         }
       }
     }
-
     for (i = 0; i < 10; i++) {
-      if (arr_c_id[i] != 0) {
-        fprintf(F2, "%s_%d", genes_n[id], arr_c_id[i]);
+      eflags[id][i] = arr_c_id[i];
+      if (eflags[id][i] != 0) {
         for (j = 0; j < cols; j++) {
-          if (arr_c_F2[id][j] == arr_c_id[i])
+          flags[id][j][i] = (arr_c_F2[id][j] == arr_c_id[i]);
+        }
+      }
+    }
+    printf("\n");
+  }
+  for (long long id = 0; id < rows; id++) {
+    fprintf(F4, f4ss[id].str().c_str());
+    for (std::size_t i = 0; i < 10; i++) {
+      if (eflags[id][i] != 0) {
+        fprintf(F2, "%s_%d", genes_n[id], eflags[id][i]);
+        for (std::size_t j = 0; j < cols; j++) {
+          if (flags[id][j][i])
             fprintf(F2, "\t1");
           else
             fprintf(F2, "\t0");
@@ -877,7 +889,6 @@ void discretize_new(const char *stream_nm) {
         fprintf(F2, "\n");
       }
     }
-    printf("\n");
   }
 
   fclose(F2);
