@@ -135,7 +135,7 @@ CLUSTERING <- function(Raw,blocks,method='MCL',K=NULL){
 #' @useDynLib BRIC
 ## final function
 ## i is the input, K is an optional parameter, used only when method=='SC'
-final <- function(i, method = 'MCL', K){
+final <- function(i, method = 'MCL', K, d=FALSE){
   if (R) {
     CLUSTERING(i, paste0(i,'.chars.blocks'), method, K = K)    # not sure how to deal with that K 
   } else {
